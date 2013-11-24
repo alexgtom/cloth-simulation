@@ -16,6 +16,7 @@
 #endif
 
 #include "Parser.h"
+#include "Environment.h"
 
 #define ROTATE_STEP_SIZE 5.0f
 #define ZOOM_STEP_SIZE 0.1f
@@ -31,7 +32,7 @@ class Scene {
   public:
     int width, height; // width and height of the window
     string inputFile;
-    vector<Shape*> shape_list;
+    Environment env;
     static float rotate_x, rotate_y;
     static float translate_x, translate_y;
     static float scale;
@@ -62,16 +63,17 @@ class Scene {
       
       // parse input file and return a patch list
       Parser parser;
-      shape_list = parser.readFile(inputFile);
+      env = parser.readFile(inputFile);
     }
 
     // render the scene in the GLUT loop
     void render() {
-      for(int i = 0; i < shape_list.size(); i++) {
+      for(int i = 0; i < env.shape_list.size(); i++) {
+        Shape *shape = env.shape_list[i];
         if (render_mode == WIREFRAME)
-          shape_list[i]->render_wireframe(time);
+          shape->render_wireframe(time, env.externalForce(shape));
         else if (render_mode == FILLED)
-          shape_list[i]->render_filled(time);
+          shape->render_filled(time, env.externalForce(shape));
       }
 
       time += RENDER_TIME_STEP;

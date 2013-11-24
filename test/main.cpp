@@ -6,6 +6,7 @@
 
 // Tests 
 #include "SampleTest.h"
+#include "EnvironmentTest.h"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

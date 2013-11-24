@@ -8,16 +8,15 @@
 #include <cstdlib>
 
 #include "Shape.h"
+#include "Environment.h"
 
 using namespace std;
 
 class Parser {
   public:
-    vector<Shape*> readFile(string file) {
-      vector<Shape*> patch_list;
-
-
-      return patch_list;
+    Environment readFile(string file) {
+      Environment env;
+      return env;
     }
 };
 
