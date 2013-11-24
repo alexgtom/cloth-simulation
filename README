@@ -1,0 +1,17 @@
+EXTERNAL LIBRARIES
+------------------
+
+**Eigen**
+Used for matrix multiplication and vector operations
+Documentation: http://eigen.tuxfamily.org/dox/
+
+**gtest**
+Used for writing unit tests
+Documentation: https://code.google.com/p/googletest/wiki/V1_7_Documentation
+
+
+HOW TO RUN
+----------
+Run 'make' to compile and then './main inputfile'
+
+Run 'make test' to compile on run the tests
