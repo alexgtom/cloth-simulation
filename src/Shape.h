@@ -49,9 +49,33 @@ class Sphere : public Shape {
     }
 
     void render_wireframe(int t, Force& external) {
+      glPushMatrix();
+      glTranslatef(center[0] , center[1], center[2]);
+		  GLfloat color[] = {0.0f, 0.1f, 0.6f, 1.0f};
+		  GLfloat emission[] = {0.0f, 0.2f, 0.6f, 1.0f};
+		  GLfloat specular[] = {0.0f, 0.2f, 0.7f, 1.0f};
+
+	  	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+	  	glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+	  	glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+	  	glMaterialf(GL_FRONT, GL_SHININESS, 0.5);
+	  	glutWireSphere(radius, 50.0, 50.0);
+	    glPopMatrix();
     }
 
     void render_filled(int t, Force& external) {
+      glPushMatrix();
+      glTranslatef(center[0] , center[1], center[2]);
+		  GLfloat color[] = {0.0f, 0.1f, 0.6f, 1.0f};
+		  GLfloat emission[] = {0.0f, 0.2f, 0.6f, 1.0f};
+		  GLfloat specular[] = {0.0f, 0.2f, 0.7f, 1.0f};
+
+	  	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+	  	glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+	  	glMaterialfv(GL_FRONT, GL_EMISSION, emission);
+	  	glMaterialf(GL_FRONT, GL_SHININESS, 0.5);
+	  	glutSolidSphere(radius, 50.0, 50.0);
+	    glPopMatrix();
     }
 
     bool intersect(Force& f, Point* intersection) {
