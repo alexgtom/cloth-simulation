@@ -1,4 +1,3 @@
-
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -30,6 +29,19 @@
 using namespace std;
 
 Scene scene;
+
+
+//****************************************************
+// reshape viewport if the window is resized
+//****************************************************
+void myReshape(int w, int h) {
+  scene.width = w;
+  scene.height = h;
+
+  glViewport (0,0,w,h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+}
 
 //****************************************************
 // function that does the actual drawing of stuff
@@ -67,7 +79,7 @@ void myDisplay() {
 
   //Add directed light
   GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f};
-  GLfloat lightPos0[] = {0.0f, 0.0f, 0.0f, 0.0f}; //0 is directional
+  GLfloat lightPos0[] = {-5.0f, 5.0f, 0.0f, 0.0f}; //0 is directional
   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
@@ -104,9 +116,10 @@ int main(int argc, char *argv[]) {
   glutCreateWindow(argv[0]);
   glEnable(GL_DEPTH_TEST);
 
-  glutDisplayFunc(myDisplay);				// function to run when its time to draw something
+  glutDisplayFunc(myDisplay);                                // function to run when its time to draw something
+  glutReshapeFunc(myReshape);	
   glutSpecialFunc(scene.keyboard);
-  glutIdleFunc(myFrameMove);
+  glutKeyboardFunc(scene.key);
 
   glutMainLoop();						// 999  //TODO: this is supposed to be infinityloop that will keep drawing and resizing
   // and whatever else
