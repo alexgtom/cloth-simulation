@@ -7,18 +7,20 @@
 #include <sstream>
 #include <cstdlib>
 
-#include <Eigen/Dense>
+#include "Includes\Eigen\Dense"
 
 #include "Shape.h"
+#include "Cloth.h"
 #include "Environment.h"
+#include "Sphere.h"
 
 class Parser {
   public:
-    Environment readFile(string file);
+    Environment* readFile(string file);
 };
 
-Environment Parser::readFile(string file) {
-  Environment env;
+Environment* Parser::readFile(string file) {
+  Environment *env = new Environment;
   vector<Shape*> shapes;
   vector<Force*> forces;
 
@@ -27,6 +29,7 @@ Environment Parser::readFile(string file) {
     cerr << "Unable to open file: " << file << endl;
     exit(1);
   } 
+
   else {
     string line;
     while(inpfile.good()) {
@@ -57,15 +60,21 @@ Environment Parser::readFile(string file) {
         float z = atof(splitline[4].c_str());
         Point *p = new Point(x, y, z);
         Shape *sph = new Sphere(r, *p);
+		//Shape *sph = new Sphere();
         shapes.push_back(sph);
-        //cout << "creating sphere with radius " << r << " at point (," << x << "," << y << "," << z << ")" << endl;
+        //cout << "creating sphere with radius " << r << " at point (" << x << "," << y << "," << z << ")" << endl;
       } else if(!splitline[0].compare("cloth")) {
-        //float r = atof(splitline[1].c_str());
+		int w = atoi(splitline[0].c_str());
+		int h = atoi(splitline[1].c_str());
+		int hp = atoi(splitline[2].c_str());
+		int wp = atoi(splitline[3].c_str());
+		float damp = atof(splitline[4].c_str());
+		//float r = atof(splitline[1].c_str());
         //float g = atof(splitline[2].c_str());
         //float b = atof(splitline[2].c_str());
         //string texture = splitline[1];
         //??? properties pending
-        Shape *c = new Cloth();
+        Shape *c = new Cloth(w,h,hp,wp,damp);
         shapes.push_back(c);
       } else if(!splitline[0].compare("force")) {
         float px = atof(splitline[1].c_str());
@@ -81,8 +90,8 @@ Environment Parser::readFile(string file) {
       }
     }
   }
-  env.shape_list = shapes;
-  env.force_list = forces;
+  env->shape_list = shapes;
+  env->force_list = forces;
   return env;
 }
 
