@@ -40,8 +40,8 @@ class Scene {
     static int time;
 
     Scene() {
-      width = 800;
-      height = 600;
+      width = 400;
+      height = 400;
       rotate_x = rotate_y = 0;
     };
     
@@ -63,7 +63,7 @@ class Scene {
       
       // parse input file and return a patch list
       Parser parser;
-      env = parser.readFile(inputFile);
+      env = *parser.readFile(inputFile);
     }
 
     // render the scene in the GLUT loop
@@ -75,7 +75,7 @@ class Scene {
         else if (render_mode == FILLED)
           shape->render_filled(time, env.externalForce(shape));
       }
-
+	  glutSwapBuffers();
       time += RENDER_TIME_STEP;
     }
 
@@ -97,7 +97,6 @@ class Scene {
           case GLUT_KEY_RIGHT:
             translate_x += TRANSLATE_STEP_SIZE;
             break;
-
             //zoom in
           case '+':
             scale += ZOOM_STEP_SIZE;
@@ -110,7 +109,7 @@ class Scene {
           case 'w':
             if (render_mode == WIREFRAME)
               render_mode = FILLED;
-            else 
+            else
               render_mode = WIREFRAME;
             break;
 
@@ -127,23 +126,42 @@ class Scene {
           case GLUT_KEY_RIGHT:
             rotate_y += ROTATE_STEP_SIZE;
             break;
-
-          // zoom out
-          case '-':
-            scale -= ZOOM_STEP_SIZE;
-            break;
-
-          // quit
-          case 'q':
-          case 27:
-            exit(0);
-            break;
         }
       }
 
       glutPostRedisplay();
     }
+
+    static void key(unsigned char key, int x, int y)
+    {
+      switch(key) {
+        // toggle between filled and wireframe mode
+        case 'w':
+          if (render_mode == WIREFRAME)
+            render_mode = FILLED;
+          else
+            render_mode = WIREFRAME;
+          break;
+
+        // zoom out
+        case '-':
+          scale -= ZOOM_STEP_SIZE;
+          break;
+        case '+':
+		  scale += ZOOM_STEP_SIZE;
+		  break;
+        // quit
+		case ' ':
+        case 'q':
+        case 27:
+          exit(0);
+          break;
+      }
+      glutPostRedisplay();
+    }
 };
+
+
 
 float Scene::rotate_x = 0.0f;
 float Scene::rotate_y = 0.0f;
