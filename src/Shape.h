@@ -36,8 +36,8 @@ using namespace Eigen;
 class Shape {
   public:
     Vector3f world_pos;
-    virtual void render_wireframe(int t, Force& external) = 0;
-    virtual void render_filled(int t, Force& external) = 0;
+    virtual void render_wireframe(int t, Force* external) = 0;
+    virtual void render_filled(int t, Force* external) = 0;
 
     // Test if f intersects with the shape or not (in object space), if so,
     // return intersection point
@@ -65,7 +65,7 @@ class Sphere : public Shape {
       this->center = center;
     }
 
-    void render_wireframe(int t, Force& external) {
+    void render_wireframe(int t, Force* external) {
       glPushMatrix();
       glTranslatef(center[0] , center[1], center[2]);
 		  GLfloat color[] = {0.0f, 0.1f, 0.6f, 1.0f};
@@ -80,7 +80,7 @@ class Sphere : public Shape {
 	    glPopMatrix();
     }
 
-    void render_filled(int t, Force& external) {
+    void render_filled(int t, Force* external) {
       glPushMatrix();
       glTranslatef(center[0] , center[1], center[2]);
 		  GLfloat color[] = {0.0f, 0.1f, 0.6f, 1.0f};
@@ -376,10 +376,10 @@ class Cloth : public Shape {
       this->world_pos = world_pos;
     }
 
-    void render_wireframe(int t, Force& external) {
+    void render_wireframe(int t, Force* external) {
     }
 
-    void render_filled(int t, Force& external) {
+    void render_filled(int t, Force* external) {
     }
 
 

@@ -71,7 +71,7 @@ class Scene {
       for(int i = 0; i < env.shape_list.size(); i++) {
         Shape *shape = env.shape_list[i];
         if (render_mode == WIREFRAME)
-          (*shape).render_wireframe(time, env.externalForce(shape));
+          shape->render_wireframe(time, env.externalForce(shape));
         else if (render_mode == FILLED)
           shape->render_filled(time, env.externalForce(shape));
       }
