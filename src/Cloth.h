@@ -3,13 +3,25 @@
 
 	Kristen Curry, Zhongyin Hu, Alex Tom, Aaron Zhou
 ********************************************************************************/
-#ifndef CLOTH_H
+/*******CLOTH IS IN SHAPE.H*************/
+
+
+/***#ifndef CLOTH_H
 #define CLOTH_H
 
+#ifdef _WIN32
 #include <windows.h>
-#include <GL/GL.h>
+#else
+#include <sys/time.h>
+#endif
+
+#ifdef OSX
+#include <GLUT/glut.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/glut.h>
-#include <GL/GLU.h>
+#include <GL/glu.h>
+#endif
 
 #include <vector>
 #include "Particle.h"
@@ -26,7 +38,6 @@ public:
 	int num_particles_x; // number of particles in x direction
 	int num_particles_y; // number of particles in y direction
 	
-
 	std::vector<Particle> List_Particles; //used to store the info of particle
 	std::vector<Spring> List_Springs; 
 
@@ -180,9 +191,9 @@ public:
 			(*iter).Time(); // calculate the position of each particle at the next time step.
 		}
 	}
-
+**/
 	/* used to add gravity/other external force to all particles*/
-	void AddForce(const Vector3f direction)
+/**	void AddForce(const Vector3f direction)
 	{
 		std::vector<Particle>::iterator it;
 		for(it = List_Particles.begin(); it!= List_Particles.end(); it++)
@@ -191,7 +202,7 @@ public:
 		}
 
 	}
-
+**/
 	/* used to add wind forces to all particles*/
 	//REFERENCE：http://www.cs.huji.ac.il/~irush/cloth/
 	/*The wind adds force to the particle in the direction of its normal 
@@ -204,7 +215,7 @@ public:
 	  3. The wind is coming in a certain direction, but forces should only be added in the direction of the normal of the triangle;
 	  4. The amount of force affecting the triangle should be proportional to the angle (dot product) between the triangle and the wind. 
 	*/
-
+/*
 	void AddWindForce(Particle *p1,Particle *p2,Particle *p3, const Vector3f direction)
 	{
 		Vector3f normal = TriangleNormal(p1,p2,p3);
@@ -249,3 +260,4 @@ public:
 
 };
 #endif 
+*/

@@ -7,12 +7,14 @@
 #include <sstream>
 #include <cstdlib>
 
-#include "Includes\Eigen\Dense"
+//#include "Includes\Eigen\Dense"
+#include <Eigen/Dense>
 
 #include "Shape.h"
-#include "Cloth.h"
+//#include "Cloth.h"
 #include "Environment.h"
-#include "Sphere.h"
+//#include "Sphere.h"
+#include "Shape.h"
 
 class Parser {
   public:
@@ -64,17 +66,18 @@ Environment* Parser::readFile(string file) {
         shapes.push_back(sph);
         //cout << "creating sphere with radius " << r << " at point (" << x << "," << y << "," << z << ")" << endl;
       } else if(!splitline[0].compare("cloth")) {
-		int w = atoi(splitline[0].c_str());
-		int h = atoi(splitline[1].c_str());
-		int hp = atoi(splitline[2].c_str());
-		int wp = atoi(splitline[3].c_str());
+		float w = atoi(splitline[0].c_str());
+        float h = atoi(splitline[1].c_str());
+		int wp = atoi(splitline[2].c_str());
+		int hp = atoi(splitline[3].c_str());
 		float damp = atof(splitline[4].c_str());
 		//float r = atof(splitline[1].c_str());
         //float g = atof(splitline[2].c_str());
         //float b = atof(splitline[2].c_str());
         //string texture = splitline[1];
         //??? properties pending
-        Shape *c = new Cloth(w,h,hp,wp,damp);
+        //Shape *c = new Cloth(w,h,hp,wp,damp);
+        Shape *c = new Cloth(w, h, wp, hp);
         shapes.push_back(c);
       } else if(!splitline[0].compare("force")) {
         float px = atof(splitline[1].c_str());
