@@ -1,6 +1,9 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 
+#include "Parser.h"
+#include "Environment.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -14,9 +17,6 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 #endif
-
-#include "Parser.h"
-#include "Environment.h"
 
 #define ROTATE_STEP_SIZE 5.0f
 #define ZOOM_STEP_SIZE 0.1f
