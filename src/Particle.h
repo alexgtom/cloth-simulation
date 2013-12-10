@@ -7,77 +7,78 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#include <vector>
-#include "Triangle.h"
+#include <Eigen/Dense>
 
-using namespace std;
+using namespace Eigen;
+
+#define DAMPING 0.05
+#define TIME_STEPSIZE 0.25
 
 class Particle
 {
-private:
-	float Mass; 
-	Vector3f Position; 
-	Vector3f OldPosition; 
-	Vector3f Acceleration;
+  public:
+	bool movable; // used to determine whether particle can be moved/ pin corners of the cloth
 
-  vector<Triangle*> list_triangles;
+	float mass; // the mass of the particle 
+	Vector3f pos; // the current position of the particle 
+	Vector3f old_pos; // the position of the particle in the previous time step
+	Vector3f velocity;
+	Vector3f acceleration; 
+	Vector3f all_normal; // used for OpenGL shading
 
-public:
-	Particle();
-	
-	Particle(Vector3f pos) 
+	Particle(Vector3f position) 
 	{
-		Position=pos;
-		OldPosition=pos;
-		Acceleration=Vector3f(0,0,0);
-		Mass=1.0;
+		movable=true; 
+		pos=position;
+		old_pos=position;
+		acceleration=Vector3f(0,0,0);
+		mass=100.0; 
+		all_normal=Vector3f(0,0,0);
 	}
-	
-	float getMass() { return Mass; }
-	void setMass(float m) { Mass = m; }
 
-	Vector3f getPosition() {return Position; }
-	void setPosition(Vector3f p) { Position = p; }
-	void offsetPos(const Vector3f v) { Position += v;}
-
-	Vector3f getVelocity() { return Position-OldPosition; }
-
-	Vector3f getAcceleration() { return Acceleration; }
-    void resetAcceleration() {Acceleration = Vector3f(0,0,0);}
-
-
-    void AddTriange(Triangle * triangle) { list_triangles.push_back(triangle);}
+	Particle(){}
 
 	void AddForce(Vector3f f)
 	{
-        // Acceleration by Newton's second law
-		Acceleration += f/Mass;
+		acceleration += f/mass;
 	}
 
-
-	void Update(float dampingCoeff, float timeinterval)
+	void Time()
 	{
-			Vector3f temp = Position;
-			Position = Position + (Position-OldPosition)*(1.0-dampingCoeff) + Acceleration*timeinterval;
-			OldPosition = temp;
-            Acceleration = Vector3f(0,0,0);
-	}
-    
+		if(movable)
+		{
+			//1. damping account for gradual loss of velocity due to e.g. air resistance
+			//2. term (old_pos-pos)implicitly represents a velocity vector
 
-	// Compute the average normal of all triangles
-	Vector3f getNormal()
+			velocity=pos-old_pos;
+			Vector3f temp = pos;
+            old_pos = temp;
+			velocity+=acceleration*TIME_STEPSIZE;
+			pos+= velocity*(1-DAMPING)*TIME_STEPSIZE ;
+			
+			acceleration = Vector3f(0,0,0); // acceleration is reset 
+
+			//std::cout<<pos[0]<<" ";
+		}
+	}
+
+	Vector3f& getPos() {return pos;}
+
+	void resetAcceleration() {acceleration = Vector3f(0,0,0);}
+
+	void movePos(const Vector3f v) { if(movable) pos += v;}
+
+	void makeUnmovable() {movable = false;}
+
+	void addToNormal(Vector3f normal)
 	{
-        Vector3f n = Vector3f(0,0,0);
-        for(int i = 0; i < list_triangles.size(); i++)
-        {
-            n+= list_triangles[i]->getNormal();
-        }
-
-        n = n / list_triangles.size();
-
-        return n;
+		all_normal += normal.normalized();
 	}
+
+	Vector3f& getNormal() { return all_normal;} 
+
+	void resetNormal() {all_normal = Vector3f(0,0,0);}
+
 };
-  
 
-#endif // PARTICLE_H
+#endif
