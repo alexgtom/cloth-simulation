@@ -1,6 +1,12 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include "Shape.h"
+//#include "Cloth.h"
+#include "Environment.h"
+//#include "Sphere.h"
+#include "Shape.h"
+
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -9,12 +15,6 @@
 
 //#include "Includes\Eigen\Dense"
 #include <Eigen/Dense>
-
-#include "Shape.h"
-//#include "Cloth.h"
-#include "Environment.h"
-//#include "Sphere.h"
-#include "Shape.h"
 
 class Parser {
   public:
