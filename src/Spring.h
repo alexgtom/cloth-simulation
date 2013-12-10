@@ -11,30 +11,36 @@
 
 class Spring
 {
-private:
-	float RestLength;
-        Particle *Particle1, *Particle2;
-
 public:
-	Spring(Particle *p1, Particle *p2)  
+	float free_length; // the length between particle p1 and p2 without force
+	float ks; //spring constant 
+	float kd; //damping coefficient of the spring
+
+	Particle *p1, *p2; // the two particles that are connected through this Spring
+
+	Spring(Particle *par1, Particle *par2)
 	{
-		Particle1=p1;
-		Particle2=p2;
-		Vector3f vec = Particle1->getPosition() - Particle2->getPosition();
-                RestLength = vec.norm();
+		p1=par1;
+		p2=par2;
+		Vector3f vec = p1->getPos()-p2->getPos();
+		free_length = vec.norm();
+		ks=0.2;
+		kd=0.2;
 	}
 
-    
-	void Check()
-	{
-		Vector3f part1Part2 = Particle2->getPosition() - Particle1->getPosition(); // vector from p1 to p2
-		float current_distance = part1Part2.norm(); // current distance between p1 and p2
-		Vector3f moveVector = part1Part2*(1 - RestLength/current_distance); // The offset vector that could moves p1 into a distance of rest_distance to p2
-		Vector3f halfmoveVector = moveVector*0.5f; // half that length, so that we can move BOTH p1 and p2.
-		Particle1->movePos(halfmoveVector); // Halfmovevector is pointing from p1 to p2, so the length should move p1 half the length.
-		Particle2->movePos(-halfmoveVector); // move p2 the negative direction of Halfmovevector since it points from p2 to p1	
-	}
 
+	void CheckSpring()
+	{
+		Vector3f p1_to_p2 = p2->getPos()-p1->getPos(); 
+		float current_distance = p1_to_p2.norm(); 
+		float dist=current_distance-free_length;
+		Vector3f dir_spring=p1_to_p2.normalized();  //direction of the spring force
+		float springforce=-kd*abs((p2->velocity.norm()-p1->velocity.norm()))-ks*dist;
+		//p1->AddForce(-springforce*dir_spring);
+		//p2->AddForce(springforce*dir_spring);
+		Vector3f correctionVector =0.5*p1_to_p2*(1-free_length/current_distance); // The offset vector that could moves p1 into a distance of free_length to p2
+		p1->movePos(correctionVector); // should move p1 half the length needed
+		p2->movePos(-correctionVector); // move p2 the negative direction of correctionVector
+	}
 };
-
 #endif
