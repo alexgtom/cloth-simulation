@@ -9,7 +9,7 @@ class Environment {
     vector<Shape*> shape_list;
     vector<Force*> force_list;
 
-    Force externalForce(Shape* shape) {
+    Force& externalForce(Shape* shape) {
       Force external;
       
       for(int i = 0; i < force_list.size(); i++) {
