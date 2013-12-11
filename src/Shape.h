@@ -30,6 +30,8 @@
 #include "Particle.h"
 #include "Spring.h"
 
+#include <SOIL/SOIL.h>
+
 using namespace std;
 using namespace Eigen;
 
@@ -148,72 +150,80 @@ class Cloth : public Shape {
     //BROUGHT IN FROM CLOTH.H CLASS
     
     int num_particles_x; // number of particles in x direction
-	int num_particles_y; // number of particles in y direction
+	  int num_particles_y; // number of particles in y direction
 	
-	std::vector<Particle> List_Particles; //used to store the info of particle
-	std::vector<Spring> List_Springs;
+	  std::vector<Particle> List_Particles; //used to store the info of particle
+	  std::vector<Spring> List_Springs;
+
+    GLuint tex_2d; //texture
+
     
     Particle* getParticle(int x, int y) {return & List_Particles.at(x*num_particles_x + y);}
 	
-	void AddSpring(Particle *p1, Particle *p2)
-	{   Spring newspring(p1,p2);
+	  void AddSpring(Particle *p1, Particle *p2)
+	  {   Spring newspring(p1,p2);
 		List_Springs.push_back(newspring);
-	}
+	  }
     
+    void addTexture(GLuint t) {
+      tex_2d = t;
+    }
+
     Cloth(float width, float height, int num_width, int num_height)
-	{
-		num_particles_x=num_width;
-		num_particles_y=num_height;
-        
-		List_Particles.resize(num_particles_x*num_particles_y);
+	  {
+      tex_2d = 0;
+
+		  num_particles_x=num_width;
+		  num_particles_y=num_height;
+          
+		  List_Particles.resize(num_particles_x*num_particles_y);
 		
-		// creating a grid of particles from (0,0,0) to (width,-height,0)
-		for(int x=0; x<num_particles_x; x++)
-		{
-			for(int y=0; y<num_particles_y; y++)
-			{
-				float pos_x=width*(float)x/(float)num_particles_x;
-				float pos_y=-height*(float)y/(float)num_particles_y;
-				Vector3f pos = Vector3f(pos_x, pos_y, 0);
-				List_Particles.at(x*num_particles_x+y)=Particle(pos);
-			}
-		}
+		  // creating a grid of particles from (0,0,0) to (width,-height,0)
+		  for(int x=0; x<num_particles_x; x++)
+		  {
+			  for(int y=0; y<num_particles_y; y++)
+			  {
+				  float pos_x=width*(float)x/(float)num_particles_x;
+				  float pos_y=-height*(float)y/(float)num_particles_y;
+				  Vector3f pos = Vector3f(pos_x, pos_y, 0);
+				  List_Particles.at(x*num_particles_x+y)=Particle(pos);
+			  }
+		  }
 		
-		// making the upper left most two and upper right most two particles unmovable
-        getParticle(0,0)->makeUnmovable();
-        getParticle(1,0)->makeUnmovable();
-        getParticle(num_particles_x-1,0)->makeUnmovable();
-        getParticle(num_particles_x-2,0)->makeUnmovable();
+		  // making the upper left most two and upper right most two particles unmovable
+      getParticle(0,0)->makeUnmovable();
+      getParticle(1,0)->makeUnmovable();
+      getParticle(num_particles_x-1,0)->makeUnmovable();
+      getParticle(num_particles_x-2,0)->makeUnmovable();
         
         
-		for(int x=0; x<num_particles_x; x++)
-		{
-			for(int y=0; y<num_particles_y; y++)
-			{
-				// 1 structural springs
-				if (x<num_particles_x-1)
-					AddSpring(getParticle(x,y),getParticle(x+1,y));
-				if (y<num_particles_y-1)
-					AddSpring(getParticle(x,y),getParticle(x,y+1));
-                
-				// 2 shear springs
-				if (x<num_particles_x-1 && y<num_particles_y-1)
-					AddSpring(getParticle(x,y),getParticle(x+1,y+1));
-				if (x<num_particles_x-1 && y<num_particles_y-1)
-					AddSpring(getParticle(x+1,y),getParticle(x,y+1));
-                
-		        // 3 bend springs
-				if (x<num_particles_x-2)
-					AddSpring(getParticle(x,y),getParticle(x+2,y));
-				if (y<num_particles_y-2)
-					AddSpring(getParticle(x,y),getParticle(x,y+2));
-				if (x<num_particles_x-2 && y<num_particles_y-2)
-					AddSpring(getParticle(x,y),getParticle(x+2,y+2));
-				if (x<num_particles_x-2 && y<num_particles_y-2)
-					AddSpring(getParticle(x+2,y),getParticle(x,y+2));			
+		  for(int x=0; x<num_particles_x; x++)
+		  {
+			  for(int y=0; y<num_particles_y; y++)
+			  {
+				  // 1 structural springs
+				  if (x<num_particles_x-1)
+					  AddSpring(getParticle(x,y),getParticle(x+1,y));
+				  if (y<num_particles_y-1)
+					  AddSpring(getParticle(x,y),getParticle(x,y+1));
+                  
+				  // 2 shear springs
+				  if (x<num_particles_x-1 && y<num_particles_y-1)
+					  AddSpring(getParticle(x,y),getParticle(x+1,y+1));
+				  if (x<num_particles_x-1 && y<num_particles_y-1)
+					  AddSpring(getParticle(x+1,y),getParticle(x,y+1));
+                  
+		          // 3 bend springs
+				  if (x<num_particles_x-2)
+					  AddSpring(getParticle(x,y),getParticle(x+2,y));
+				  if (y<num_particles_y-2)
+					  AddSpring(getParticle(x,y),getParticle(x,y+2));
+				  if (x<num_particles_x-2 && y<num_particles_y-2)
+					  AddSpring(getParticle(x,y),getParticle(x+2,y+2));
+				  if (x<num_particles_x-2 && y<num_particles_y-2)
+					  AddSpring(getParticle(x+2,y),getParticle(x,y+2));			
 			}
-		}
-        
+		}        
 	}
     
     
@@ -234,7 +244,7 @@ class Cloth : public Shape {
 	void drawTriangle(Particle *p1, Particle *p2, Particle *p3, const Vector3f color)
 	{
 		glColor3f(color[0], color[1],color[2]);
-        
+
 		glNormal3f(p1->getNormal().normalized()[0], p1->getNormal().normalized()[1],p1->getNormal().normalized()[2]);
 		glVertex3f(p1->getPos()[0], p1->getPos()[1], p1->getPos()[2]);
         
@@ -246,6 +256,28 @@ class Cloth : public Shape {
         
 	}
     
+  void drawTri(int x1, int y1, int x2, int y2, int x3, int y3) { 
+    Particle *p1 = getParticle(x1,y1);
+    Particle *p2 = getParticle(x2,y2);
+    Particle *p3 = getParticle(x3,y3);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+		glNormal3f(p1->getNormal().normalized()[0], p1->getNormal().normalized()[1],p1->getNormal().normalized()[2]);
+    glTexCoord2f((float) x1/ (float) num_particles_x,1.0-(float) y1/ (float) num_particles_y); 
+		glVertex3f(p1->getPos()[0], p1->getPos()[1], p1->getPos()[2]);
+        
+		glNormal3f(p2->getNormal().normalized()[0], p2->getNormal().normalized()[1],p2->getNormal().normalized()[2]);
+    glTexCoord2f((float) x2/ (float) num_particles_x,1.0-(float) y2/ (float) num_particles_y); 
+		glVertex3f(p2->getPos()[0], p2->getPos()[1], p2->getPos()[2]);
+        
+		glNormal3f(p3->getNormal().normalized()[0], p3->getNormal().normalized()[1],p3->getNormal().normalized()[2]);
+    glTexCoord2f((float) x3/ (float) num_particles_x,1.0-(float) y3/ (float) num_particles_y); 
+		glVertex3f(p3->getPos()[0], p3->getPos()[1], p3->getPos()[2]);
+
+    
+  } 
+
 	void drawCloth()
 	{
 		std::vector<Particle>::iterator it;
@@ -270,6 +302,16 @@ class Cloth : public Shape {
 				getParticle(x,y+1)->addToNormal(normal);
 			}
 		}
+
+    //draw texture
+    if(tex_2d != 0) {
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture( GL_TEXTURE_2D, tex_2d);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+      glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    } 
         
 		glBegin(GL_TRIANGLES);
 		for(int x = 0; x<num_particles_x-1; x++)
@@ -277,11 +319,16 @@ class Cloth : public Shape {
 			for(int y=0; y<num_particles_y-1; y++)
 			{
 				Vector3f color = Vector3f(0.5f, 0.5f, 0.5f);
-                
-				drawTriangle(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1),color);
-				drawTriangle(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1),color);
+        if(0 == tex_2d) { //no texture
+				  drawTriangle(getParticle(x+1,y),getParticle(x,y),getParticle(x,y+1),color);
+				  drawTriangle(getParticle(x+1,y+1),getParticle(x+1,y),getParticle(x,y+1),color);
+        } else {
+          drawTri(x+1,y,x,y,x,y+1);
+          drawTri(x+1,y+1,x+1,y,x,y+1);
+        }
 			}
 		}
+
 		glEnd();
 	}
     
@@ -377,11 +424,9 @@ class Cloth : public Shape {
     }
 
     void render_wireframe(int t, Force* external) {
-        //drawCloth();
     }
 
     void render_filled(int t, Force* external) {
-        //drawCloth();
     }
 
 
