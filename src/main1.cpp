@@ -55,7 +55,7 @@ float ball_radius = 2; // the radius of our one ball
 
 
 /* ************************************************************************* */
-/* Initialize Light Sources and Materials
+/* Initialize Light Sources and Materials                                    */
 /* ************************************************************************* */
 void init(GLvoid)
 {
