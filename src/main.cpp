@@ -29,6 +29,11 @@
 using namespace std;
 
 Scene scene;
+Cloth cloth(10,10,10,10); // one Cloth object of the Cloth class
+Vector3f ball_pos(7,-5,0); // the center of our one ball
+float ball_radius = 4; // the radius of our one ball
+
+GLuint tex_2d;
 
 /* ************************************************************************* */
 /* Initialize Light Sources and Materials                                    */
@@ -78,57 +83,73 @@ void myReshape(int w, int h) {
   glViewport (0,0,w,h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
+  gluPerspective (80, (float )w /(float)h, 1.0,5000.0 );
+  glMatrixMode(GL_MODELVIEW);  
+  glLoadIdentity();
 }
 
 //****************************************************
 // function that does the actual drawing of stuff
 //***************************************************
 
+float timer = 0; // counter for used to calculate the z position of the ball below
 
 void myDisplay() {
 
-  // clear the color buffer and Z-buffer
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	  
+  // calculating positions
 
-  // indicate we are specifying camera transformations
-  glMatrixMode(GL_MODELVIEW);			
+  timer++;
+  ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
 
-  // Reset transformations
+
+  cloth.addTexture(tex_2d);  
+
+  cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
+  cloth.AddWind(Vector3f(1,0,1)); // generate wind 
+  cloth.Time();                   // calculate the particle positions of the next step
+  cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
+
+  // Transformations
+  
+  // OpenGL drawing
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
 
-  // Translations
-  glTranslatef(scene.translate_x, scene.translate_y, 0.0f);
+  glTranslatef(-6.5,6,-9.0f); 
+  glRotatef(20,0,1,0);
+  
+  // These were used for controling the camera via keyboard, but the shading is messsed up
+  //// clear the color buffer and Z-buffer
+  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	  
 
-  // Zoom
-  glScalef(scene.scale, scene.scale, scene.scale);
+  //// indicate we are specifying camera transformations
+  //glMatrixMode(GL_MODELVIEW);			
 
-  // rotations
-  glRotatef(scene.rotate_x, 1.0, 0.0, 0.0);
-  glRotatef(scene.rotate_y, 0.0, 1.0, 0.0);
+  //// Reset transformations
+  //glLoadIdentity();
 
-  // Lighting
-  //glEnable(GL_LIGHTING);
-  //glEnable(GL_LIGHT0);
-  //glEnable(GL_COLOR_MATERIAL);
-  //glEnable(GL_NORMALIZE); // normalize all the normal vectors
+  //// Translations
+  //glTranslatef(scene.translate_x, scene.translate_y, 0.0f);
 
-  //Add ambient light
-  //GLfloat ambientColor[] = {0.0f, 0.0f, 0.5f, 1.0f};
-  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+  //// Zoom
+  //glScalef(scene.scale, scene.scale, scene.scale);
 
-  //Add directed light
-  //GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f};
-  //GLfloat lightPos0[] = {-5.0f, 5.0f, 0.0f, 0.0f}; //0 is directional
-  //glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-  //glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+  //// rotations
+  //glRotatef(scene.rotate_x, 1.0, 0.0, 0.0);
+  //glRotatef(scene.rotate_y, 0.0, 1.0, 0.0);
 
-  //init();
-    
   // Start drawing stuff here
-  scene.render();
+  //scene.render();
+  cloth.drawCloth(); // draw the cloth with smooth shading
+
+  glPushMatrix(); //  use glutSolidSphere to draw the ball
+  glTranslatef(ball_pos[0],ball_pos[1],ball_pos[2]); // hence the translation of the sphere onto the ball position
+  glColor3f(0.4f,0.8f,0.5f); //green ball
+  glutSolidSphere(ball_radius-0.1,50,50); 
+  glPopMatrix();
 
   glFlush();
-  glutSwapBuffers();					    // swap buffers (we earlier set double buffer)
+  glutSwapBuffers();
 }
 
 void myFrameMove() {
@@ -162,6 +183,7 @@ int main(int argc, char *argv[]) {
   glutReshapeFunc(myReshape);	
   glutSpecialFunc(scene.keyboard);
   glutKeyboardFunc(scene.key);
+  glutIdleFunc(myFrameMove);
 
   glutMainLoop();						// 999  //TODO: this is supposed to be infinityloop that will keep drawing and resizing
   // and whatever else
