@@ -76,8 +76,10 @@ class Scene {
         else if (render_mode == FILLED)
           shape->render_filled(time, env.externalForce(shape));
       }
+        motion();
 	  glutSwapBuffers();
-        time += RENDER_TIME_STEP;
+        //time += RENDER_TIME_STEP;
+        //motion();
     }
     
     //draw cloth and movement
@@ -97,11 +99,12 @@ class Scene {
                 //curr_cloth->Intersect(ball_pos, ball_radius);
                 
                 //OpenGL drawing
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+               // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glLoadIdentity();
-                
-                curr_cloth->drawCloth();
             }
+            
+            curr_cloth->drawCloth();
+            
         }
     }
 

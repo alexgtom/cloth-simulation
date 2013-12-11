@@ -30,7 +30,7 @@
 #include "Particle.h"
 #include "Spring.h"
 
-#include <SOIL/SOIL.h>
+//#include <SOIL/SOIL.h>
 
 using namespace std;
 using namespace Eigen;

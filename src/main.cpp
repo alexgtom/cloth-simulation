@@ -30,6 +30,43 @@ using namespace std;
 
 Scene scene;
 
+/* ************************************************************************* */
+/* Initialize Light Sources and Materials                                    */
+/* ************************************************************************* */
+void init()
+{
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+	
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	GLfloat Pos0[] = {-1.0,1.0,0.5,0.0};
+	glLightfv(GL_LIGHT0,GL_POSITION, Pos0);
+    
+	glEnable(GL_LIGHT1);
+    
+	GLfloat Ambient1[] = {0.0,0.0,0.0,0.0};
+	GLfloat Pos1[] = {1.0,0.0,-0.2,0.0};
+	GLfloat Diffuse1[] = {0.5,0.5,0.3,0.0};
+    
+	glLightfv(GL_LIGHT1,GL_POSITION, Pos1);
+	glLightfv(GL_LIGHT1,GL_AMBIENT, Ambient1);
+	glLightfv(GL_LIGHT1,GL_DIFFUSE, Diffuse1);
+    
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
+    
+	// define material properties:
+	glEnable(GL_COLOR_MATERIAL);
+	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat mat_diffuse[] = {0.0, 1.0, 0.0, 1.0};
+	GLfloat mat_ambient[] = {0.0, 0.1, 0.1, 1.0};
+	GLfloat mat_shininess = {20.0};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+}
+
 
 //****************************************************
 // reshape viewport if the window is resized
@@ -46,6 +83,8 @@ void myReshape(int w, int h) {
 //****************************************************
 // function that does the actual drawing of stuff
 //***************************************************
+
+
 void myDisplay() {
 
   // clear the color buffer and Z-buffer
@@ -68,21 +107,23 @@ void myDisplay() {
   glRotatef(scene.rotate_y, 0.0, 1.0, 0.0);
 
   // Lighting
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_NORMALIZE); // normalize all the normal vectors
+  //glEnable(GL_LIGHTING);
+  //glEnable(GL_LIGHT0);
+  //glEnable(GL_COLOR_MATERIAL);
+  //glEnable(GL_NORMALIZE); // normalize all the normal vectors
 
   //Add ambient light
-  GLfloat ambientColor[] = {0.0f, 0.0f, 0.5f, 1.0f};
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+  //GLfloat ambientColor[] = {0.0f, 0.0f, 0.5f, 1.0f};
+  //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
 
   //Add directed light
-  GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f};
-  GLfloat lightPos0[] = {-5.0f, 5.0f, 0.0f, 0.0f}; //0 is directional
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+  //GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f};
+  //GLfloat lightPos0[] = {-5.0f, 5.0f, 0.0f, 0.0f}; //0 is directional
+  //glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+  //glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 
+  //init();
+    
   // Start drawing stuff here
   scene.render();
 
@@ -116,6 +157,7 @@ int main(int argc, char *argv[]) {
   glutCreateWindow(argv[0]);
   glEnable(GL_DEPTH_TEST);
 
+  init();
   glutDisplayFunc(myDisplay);                                // function to run when its time to draw something
   glutReshapeFunc(myReshape);	
   glutSpecialFunc(scene.keyboard);
