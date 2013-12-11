@@ -3,6 +3,9 @@
 
 	Kristen Curry, Zhongyin Hu, Alex Tom, Aaron Zhou
 ********************************************************************************/
+#include "Scene.h"
+#include "Shape.h"
+
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -30,12 +33,11 @@
 #include <time.h>
 #include <math.h>
 
+#include <SOIL/SOIL.h>
+
 #include <Eigen/Dense>
 
 using namespace Eigen;
-
-#include "Cloth.h"
-
 
 class Viewport {
   public:
@@ -43,22 +45,25 @@ class Viewport {
 };
 
 Viewport viewport;
+Scene scene;
 
 //****************************************************
 // Global Variables
 //****************************************************
 
 // define Cloth and Ball 
-Cloth cloth(20,10,10,10); // one Cloth object of the Cloth class
+Cloth cloth(10,10,10,10); // one Cloth object of the Cloth class
 Vector3f ball_pos(7,-5,0); // the center of our one ball
-float ball_radius = 2; // the radius of our one ball
+float ball_radius = 4; // the radius of our one ball
 
+GLuint tex_2d;
 
 /* ************************************************************************* */
 /* Initialize Light Sources and Materials                                    */
 /* ************************************************************************* */
-void init(GLvoid)
+void init()
 {
+  
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	
@@ -89,6 +94,20 @@ void init(GLvoid)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+  
+  tex_2d = SOIL_load_OGL_texture
+  (
+    "img.png", //use command line input???
+    SOIL_LOAD_AUTO,
+    SOIL_CREATE_NEW_ID,
+    SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+  ); 
+
+  if( 0 == tex_2d )
+  {
+    printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
+  }
+
 }
 
 //****************************************************
@@ -119,9 +138,12 @@ float timer = 0; // counter for used to calculate the z position of the ball bel
 void myDisplay(void)
 {
 	// calculating positions
-
+  
 	timer++;
 	ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
+
+
+  cloth.addTexture(tex_2d);  
 
 	cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
 	cloth.AddWind(Vector3f(1,0,1)); // generate wind 
@@ -141,7 +163,7 @@ void myDisplay(void)
 	glColor3f(0.4f,0.8f,0.5f); //green ball
 	glutSolidSphere(ball_radius-0.1,50,50); 
 	glPopMatrix();
-
+  
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
@@ -153,14 +175,12 @@ void reshape(int w, int h)
 	glLoadIdentity();  
 	gluPerspective (80, (float )w /(float)h, 1.0,5000.0 );
 	glMatrixMode(GL_MODELVIEW);  
-	glLoadIdentity(); 
+	glLoadIdentity();
 }
-
 
 int main ( int argc, char** argv ) 
 {
 	glutInit( &argc, argv );
-
 	
 	glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH ); 
 	glutInitWindowSize(400, 400 ); 
@@ -169,6 +189,8 @@ int main ( int argc, char** argv )
 	init();
 	glutDisplayFunc(myDisplay);  
 	glutReshapeFunc(reshape);
+  glutSpecialFunc(scene.keyboard);
+  glutKeyboardFunc(scene.key);
 
 	glutMainLoop();
 	
