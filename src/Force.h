@@ -33,6 +33,10 @@ class Force {
       *this = *this + f;
       return *this;
 	}
+    
+    Vector3f getdir() {
+        return dir;
+    }
 
 	bool operator==(const Force& f) const {
 		return f.pos == pos && f.dir == dir;

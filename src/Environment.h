@@ -8,6 +8,7 @@ class Environment {
   public:
     vector<Shape*> shape_list;
     vector<Force*> force_list;
+    vector<Shape*> cloth_list;
 
     Force* externalForce(Shape* shape) {
       Force *external = new Force();

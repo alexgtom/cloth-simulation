@@ -377,9 +377,11 @@ class Cloth : public Shape {
     }
 
     void render_wireframe(int t, Force* external) {
+        //drawCloth();
     }
 
     void render_filled(int t, Force* external) {
+        //drawCloth();
     }
 
 

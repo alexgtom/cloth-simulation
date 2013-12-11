@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 #include "Environment.h"
+#include "Shape.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -77,6 +78,31 @@ class Scene {
       }
 	  glutSwapBuffers();
         time += RENDER_TIME_STEP;
+    }
+    
+    //draw cloth and movement
+    void motion() {
+        time += RENDER_TIME_STEP;
+        //change ball position
+        
+        //iterate through cloths
+        for(int i = 0; i < env.cloth_list.size(); i++) {
+            Cloth *curr_cloth = (Cloth*) env.cloth_list[i];
+            
+            //iterate through forces
+            for (int j = 0; j < env.force_list.size(); j++) {
+                Force *curr_force = env.force_list[j];
+                curr_cloth->AddForce((*curr_force).dir);
+                curr_cloth->Time();
+                //curr_cloth->Intersect(ball_pos, ball_radius);
+                
+                //OpenGL drawing
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glLoadIdentity();
+                
+                curr_cloth->drawCloth();
+            }
+        }
     }
 
     // keyboard controls for the scene from the keyboard

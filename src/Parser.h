@@ -25,6 +25,7 @@ Environment* Parser::readFile(string file) {
   Environment *env = new Environment;
   vector<Shape*> shapes;
   vector<Force*> forces;
+  vector<Shape*> cloths;
 
   ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -78,11 +79,11 @@ Environment* Parser::readFile(string file) {
         //??? properties pending
         //Shape *c = new Cloth(w,h,hp,wp,damp);
         Shape *c = new Cloth(w, h, wp, hp);
-        shapes.push_back(c);
+        cloths.push_back(c);
       } else if(!splitline[0].compare("force")) {
         float px = atof(splitline[1].c_str());
         float py = atof(splitline[2].c_str());
-        float pz = atof(splitline[3].c_str()); 
+        float pz = atof(splitline[3].c_str());
         float dx = atof(splitline[4].c_str());
         float dy = atof(splitline[5].c_str());
         float dz = atof(splitline[6].c_str());
@@ -95,6 +96,7 @@ Environment* Parser::readFile(string file) {
   }
   env->shape_list = shapes;
   env->force_list = forces;
+  env->cloth_list = cloths;
   return env;
 }
 
