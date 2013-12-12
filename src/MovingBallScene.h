@@ -3,6 +3,8 @@
 
 #include "Scene.h"
 
+#define NUM_TRIANGLES 100
+
 class MovingBallScene {
   public:
     static int timer;
@@ -10,26 +12,24 @@ class MovingBallScene {
 
     static void setup(void) {
 	  // making the upper left most two and upper right most two particles unmovable
-      cloth.getParticle(0,0)->makeUnmovable();
-      cloth.getParticle(1,0)->makeUnmovable();
-      cloth.getParticle(cloth.num_particles_x-1,0)->makeUnmovable();
-      cloth.getParticle(cloth.num_particles_x-2,0)->makeUnmovable();
+      for(int i = 0; i < NUM_TRIANGLES; i++)
+        cloth.getParticle(i,0)->makeUnmovable();
     }
 
     static void display(void) {
       // calculating positions
-      Vector3f ball_pos(7,-5,0); // the center of our one ball
-      float ball_radius = 4; // the radius of our one ball
+      Vector3f ball_pos(5,-5,0); // the center of our one ball
+      float ball_radius = 2; // the radius of our one ball
       GLuint tex_2d;
 
       timer++;
-      ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
+      ball_pos[2] = cos(timer * 0.1/20.0)*8.0f;  //used a cosine function to let the ball move forward and backward
 
 
       cloth.addTexture(tex_2d);  
 
       cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
-      cloth.AddWind(Vector3f(1,0,1)); // generate wind 
+      //cloth.AddWind(Vector3f(1,0,1)); // generate wind 
       cloth.Time();                   // calculate the particle positions of the next step
       cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
 
@@ -38,7 +38,7 @@ class MovingBallScene {
       glLoadIdentity();
 
       glTranslatef(-6.5,6,-9.0f); 
-      glRotatef(20,0,1,0);
+      glRotatef(30,0,1,0);
       cloth.drawCloth(); // draw the cloth with smooth shading
 
       glPushMatrix(); //  use glutSolidSphere to draw the ball
@@ -53,6 +53,6 @@ class MovingBallScene {
 };
 
 int MovingBallScene::timer = 0;
-Cloth MovingBallScene::cloth = Cloth(10,10,10,10); // one Cloth object of the Cloth class
+Cloth MovingBallScene::cloth = Cloth(10,10,NUM_TRIANGLES,NUM_TRIANGLES); // one Cloth object of the Cloth class
 
 #endif
