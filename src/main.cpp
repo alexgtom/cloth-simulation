@@ -24,16 +24,12 @@
 #include <math.h>
 
 #include "Scene.h"
+#include "MovingBallScene.h"
 #include "Parser.h"
 
 using namespace std;
 
 Scene scene;
-Cloth cloth(10,10,10,10); // one Cloth object of the Cloth class
-Vector3f ball_pos(7,-5,0); // the center of our one ball
-float ball_radius = 4; // the radius of our one ball
-
-GLuint tex_2d;
 
 /* ************************************************************************* */
 /* Initialize Light Sources and Materials                                    */
@@ -92,66 +88,6 @@ void myReshape(int w, int h) {
 // function that does the actual drawing of stuff
 //***************************************************
 
-float timer = 0; // counter for used to calculate the z position of the ball below
-
-void myDisplay() {
-
-  // calculating positions
-
-  timer++;
-  ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
-
-
-  cloth.addTexture(tex_2d);  
-
-  cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
-  cloth.AddWind(Vector3f(1,0,1)); // generate wind 
-  cloth.Time();                   // calculate the particle positions of the next step
-  cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
-
-  // Transformations
-  
-  // OpenGL drawing
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glLoadIdentity();
-
-  glTranslatef(-6.5,6,-9.0f); 
-  glRotatef(20,0,1,0);
-  
-  // These were used for controling the camera via keyboard, but the shading is messsed up
-  //// clear the color buffer and Z-buffer
-  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	  
-
-  //// indicate we are specifying camera transformations
-  //glMatrixMode(GL_MODELVIEW);			
-
-  //// Reset transformations
-  //glLoadIdentity();
-
-  //// Translations
-  //glTranslatef(scene.translate_x, scene.translate_y, 0.0f);
-
-  //// Zoom
-  //glScalef(scene.scale, scene.scale, scene.scale);
-
-  //// rotations
-  //glRotatef(scene.rotate_x, 1.0, 0.0, 0.0);
-  //glRotatef(scene.rotate_y, 0.0, 1.0, 0.0);
-
-  // Start drawing stuff here
-  //scene.render();
-  cloth.drawCloth(); // draw the cloth with smooth shading
-
-  glPushMatrix(); //  use glutSolidSphere to draw the ball
-  glTranslatef(ball_pos[0],ball_pos[1],ball_pos[2]); // hence the translation of the sphere onto the ball position
-  glColor3f(0.4f,0.8f,0.5f); //green ball
-  glutSolidSphere(ball_radius-0.1,50,50); 
-  glPopMatrix();
-
-  glFlush();
-  glutSwapBuffers();
-}
-
 void myFrameMove() {
   //nothing here for now
 #ifdef _WIN32
@@ -179,7 +115,11 @@ int main(int argc, char *argv[]) {
   glEnable(GL_DEPTH_TEST);
 
   init();
-  glutDisplayFunc(myDisplay);                                // function to run when its time to draw something
+  // Display secenes here
+  MovingBallScene::setup();
+  glutDisplayFunc(MovingBallScene::display);
+
+  // Glut stuff
   glutReshapeFunc(myReshape);	
   glutSpecialFunc(scene.keyboard);
   glutKeyboardFunc(scene.key);

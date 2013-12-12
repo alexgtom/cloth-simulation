@@ -190,11 +190,6 @@ class Cloth : public Shape {
 			  }
 		  }
 		
-		  // making the upper left most two and upper right most two particles unmovable
-      getParticle(0,0)->makeUnmovable();
-      getParticle(1,0)->makeUnmovable();
-      getParticle(num_particles_x-1,0)->makeUnmovable();
-      getParticle(num_particles_x-2,0)->makeUnmovable();
         
         
 		  for(int x=0; x<num_particles_x; x++)
