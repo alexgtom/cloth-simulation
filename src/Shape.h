@@ -404,8 +404,7 @@ class Cloth : public Shape {
 			float l = v.norm();
 			if ( v.norm() < radius) // if the particle is inside the ball
 			{
-				float e=1;
-				(*it).movePos(v.normalized()*((radius+e)-l)); 
+				(*it).movePos(v.normalized()*((radius-l)); 
 				// move the particle to the surface of the ball
 				// add e for a better image
 			}
