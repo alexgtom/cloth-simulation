@@ -3,7 +3,7 @@
 
 #include "Scene.h"
 
-#define NUM_TRIANGLES 100
+#define NUM_TRIANGLES 50
 
 class MovingBallScene {
   public:
@@ -18,12 +18,12 @@ class MovingBallScene {
 
     static void display(void) {
       // calculating positions
-      Vector3f ball_pos(5,-5,0); // the center of our one ball
+      Vector3f ball_pos(5,-7.5,0); // the center of our one ball
       float ball_radius = 2; // the radius of our one ball
       GLuint tex_2d;
 
       timer++;
-      ball_pos[2] = cos(timer * 0.1/20.0)*8.0f;  //used a cosine function to let the ball move forward and backward
+      ball_pos[2] = cos(timer * 0.2/20.0)*10.0f - 1.0f;  //used a cosine function to let the ball move forward and backward
 
 
       cloth.addTexture(tex_2d);  
