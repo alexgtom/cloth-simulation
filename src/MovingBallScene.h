@@ -31,7 +31,7 @@ class MovingBallScene {
       cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
       //cloth.AddWind(Vector3f(1,0,1)); // generate wind 
       cloth.Time();                   // calculate the particle positions of the next step
-      cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
+      cloth.Intersect_Ball(ball_pos, ball_radius); // resolve collision with the ball
 
       // OpenGL drawing
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
