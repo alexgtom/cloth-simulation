@@ -45,8 +45,8 @@ class FallingClothFloor {
       cloth.AddForce(Vector3f(0,0,9.8)); // add gravity 
       cloth.AddWind(Vector3f(10,0,10)); // generate wind 
       cloth.Time();                   // calculate the particle positions of the next step
-      cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
-      cloth.Intersect(ball_pos2, ball_radius2);
+      cloth.Intersect_Ball(ball_pos, ball_radius); // resolve collision with the ball
+      cloth.Intersect_Ball(ball_pos2, ball_radius2);
 
       // OpenGL drawing
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
