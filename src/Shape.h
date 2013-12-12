@@ -395,18 +395,36 @@ class Cloth : public Shape {
     
 	// used to detect the collision of the cloth with the ball.
 	
-	void Intersect(const Vector3f center,const float radius )
+	void Intersect_Ball(const Vector3f center,const float radius )
 	{
 		std::vector<Particle>::iterator it;
 		for(it = List_Particles.begin(); it!= List_Particles.end(); it++)
 		{
 			Vector3f v = (*it).getPos()-center;
-			float l = v.norm();
-			if ( v.norm() < radius) // if the particle is inside the ball
+			float dist = v.norm();
+			if ( dist < radius || dist==radius ) // if the particle is inside the ball
 			{
-				(*it).movePos(v.normalized()*(radius-l)); 
+				(*it).movePos(v.normalized()*(radius-dist)); 
 				// move the particle to the surface of the ball
-				// add e for a better image
+			}
+		}
+	}
+
+
+	void Intersect_Floor(const float position_y)
+	{
+		std::vector<Particle>::iterator it;
+		for(it = List_Particles.begin(); it!= List_Particles.end(); it++)
+		{
+			float dist = (*it).getPos()[1]-position_y;
+			if ( dist < 0 ) // if the particle is inside the ball
+			{
+				float x=(*it).getPos()[0];
+				float z=(*it).getPos()[2];
+				Vector3f v= Vector3f(x, position_y+0.1, z);
+				(*it).setPos(v); 
+				(*it).resetAcceleration();
+				// move the particle to the surface of the ball
 			}
 		}
 	}
