@@ -64,6 +64,10 @@ class Particle
 
 	Vector3f& getPos() {return pos;}
 
+	void setPos(const Vector3f v){
+	    pos=v;
+	}
+
 	void resetAcceleration() {acceleration = Vector3f(0,0,0);}
 
 	void movePos(const Vector3f v) { if(movable) pos += v;}
