@@ -61,7 +61,7 @@ class FallingtoFloorScene {
     }
 };
 
-int FallingClothScene::timer = 0;
-Cloth FallingClothScene::cloth = Cloth(20,10,20,20); // one Cloth object of the Cloth class
+int FallingtoFloorScene::timer = 0;
+Cloth FallingtoFloorScene::cloth = Cloth(20,10,20,20); // one Cloth object of the Cloth class
 
 #endif
