@@ -43,9 +43,9 @@ class FallingtoFloorScene {
       cloth.drawCloth(); // draw the cloth with smooth shading
 
       glPushMatrix(); //  use glutSolidSphere to draw the ball
-      glTranslatef(ball_pos[0],ball_pos[1],ball_pos[2]); // hence the translation of the sphere onto the ball position
+      glTranslatef(ball_1_pos[0],ball_1_pos[1],ball_1_pos[2]); // hence the translation of the sphere onto the ball position
       glColor3f(0.4f,0.8f,0.5f); //green ball
-      glutSolidSphere(ball_radius-0.1,50,50); 
+      glutSolidSphere(ball_1_radius-0.1,50,50); 
       glPopMatrix();
 
       glColor3f(1.0f,1.0f,1.0f);
