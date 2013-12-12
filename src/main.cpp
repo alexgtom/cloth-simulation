@@ -25,6 +25,7 @@
 
 #include "Scene.h"
 #include "MovingBallScene.h"
+#include "FallingClothScene.h"
 #include "Parser.h"
 
 using namespace std;
@@ -116,8 +117,10 @@ int main(int argc, char *argv[]) {
 
   init();
   // Display secenes here
-  MovingBallScene::setup();
-  glutDisplayFunc(MovingBallScene::display);
+  //MovingBallScene::setup();
+  //glutDisplayFunc(MovingBallScene::display);
+  FallingClothScene::setup();
+  glutDisplayFunc(FallingClothScene::display);
 
   // Glut stuff
   glutReshapeFunc(myReshape);	
