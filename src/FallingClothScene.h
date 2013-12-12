@@ -1,6 +1,8 @@
 #ifndef _FALLING_CLOTH_SCENE_H_ 
 #define _FALLING_CLOTH_SCENE_H_ 
 
+#define NUM_TRIANGLES 100
+
 #include "Scene.h"
 
 class FallingClothScene {
@@ -52,6 +54,6 @@ class FallingClothScene {
 };
 
 int FallingClothScene::timer = 0;
-Cloth FallingClothScene::cloth = Cloth(10,10,20,20); // one Cloth object of the Cloth class
+Cloth FallingClothScene::cloth = Cloth(10,10,NUM_TRIANGLES,NUM_TRIANGLES); // one Cloth object of the Cloth class
 
 #endif
