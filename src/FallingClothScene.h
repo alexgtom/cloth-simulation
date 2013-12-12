@@ -13,8 +13,8 @@ class FallingClothScene {
 
     static void display(void) {
       // calculating positions
-      Vector3f ball_pos(10,-10,5); // the center of our one ball
-      float ball_radius = 4; // the radius of our one ball
+      Vector3f ball_pos(5,-5,3); // the center of our one ball
+      float ball_radius = 2; // the radius of our one ball
       GLuint tex_2d;
 
       timer++;
@@ -23,7 +23,7 @@ class FallingClothScene {
 
       cloth.addTexture(tex_2d);  
 
-      cloth.AddForce(Vector3f(9.8,0,9.8)); // add gravity 
+      cloth.AddForce(Vector3f(0,0,9.8)); // add gravity 
       //cloth.AddWind(Vector3f(10,0,10)); // generate wind 
       cloth.Time();                   // calculate the particle positions of the next step
       cloth.Intersect(ball_pos, ball_radius); // resolve collision with the ball
@@ -31,9 +31,12 @@ class FallingClothScene {
       // OpenGL drawing
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       glLoadIdentity();
+      gluLookAt(
+        15, -5.0, -0.0, 
+        5.0, -5.0, 3.0, 
+        0.0, 0.0, -1.0
+      );
 
-      glTranslatef(-6.5,6,-9.0f); 
-      glRotatef(20,0,1,0);
       cloth.drawCloth(); // draw the cloth with smooth shading
 
       glPushMatrix(); //  use glutSolidSphere to draw the ball
@@ -42,12 +45,13 @@ class FallingClothScene {
       glutSolidSphere(ball_radius-0.1,50,50); 
       glPopMatrix();
 
+
       glFlush();
       glutSwapBuffers();
     }
 };
 
 int FallingClothScene::timer = 0;
-Cloth FallingClothScene::cloth = Cloth(10,10,10,10); // one Cloth object of the Cloth class
+Cloth FallingClothScene::cloth = Cloth(10,10,20,20); // one Cloth object of the Cloth class
 
 #endif
