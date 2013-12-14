@@ -9,9 +9,12 @@ Documentation: http://eigen.tuxfamily.org/dox/
 Used for writing unit tests
 Documentation: https://code.google.com/p/googletest/wiki/V1_7_Documentation
 
+**SOIL**
+Used to load images into OpenGL textures
+Documentation: http://www.lonesock.net/soil.html
 
 HOW TO RUN
 ----------
-Run 'make' to compile and then './main inputfile'
+Run 'make' to compile and then './main imagefile.png'
 
 Run 'make test' to compile on run the tests
