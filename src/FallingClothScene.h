@@ -4,26 +4,39 @@
 #define NUM_TRIANGLES 100
 
 #include "Scene.h"
+#include <SOIL/SOIL.h>
+#include <string>
 
 class FallingClothScene {
   public:
     static int timer;
     static Cloth cloth; 
+    //static string s = "ace.png";
+    //static GLuint tex_2d;
 
-    static void setup(void) {
+    
+    static void setup(string s) {
+        GLuint tex_2d = SOIL_load_OGL_texture
+        (
+         s.c_str(),
+         SOIL_LOAD_AUTO,
+         SOIL_CREATE_NEW_ID,
+         SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+         );
+        
+        if( 0 == tex_2d )
+        {
+            printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
+        }
+        cloth.addTexture(tex_2d);
     }
-
+    
     static void display(void) {
       // calculating positions
       Vector3f ball_pos(5,-5,3); // the center of our one ball
       float ball_radius = 2; // the radius of our one ball
-      GLuint tex_2d;
-
       timer++;
       //ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
-
-
-      cloth.addTexture(tex_2d);  
 
       cloth.AddForce(Vector3f(0,0,9.8)); // add gravity 
       //cloth.AddWind(Vector3f(10,0,10)); // generate wind 

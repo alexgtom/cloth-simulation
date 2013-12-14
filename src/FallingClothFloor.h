@@ -2,15 +2,30 @@
 #define _FALLING_CLOTH_FLOOR_H_ 
 
 #include "Scene.h"
-//#include <SOIL/SOIL.h>
+#include <SOIL/SOIL.h>
+#include <string>
 
 class FallingClothFloor {
   public:
     static int timer;
     static Cloth cloth; 
 
-    static void setup(void) {
-    }
+
+        static void setup(string s) {
+            GLuint tex_2d = SOIL_load_OGL_texture
+            (
+             s.c_str(),
+             SOIL_LOAD_AUTO,
+             SOIL_CREATE_NEW_ID,
+             SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+             );
+            
+            if( 0 == tex_2d )
+            {
+                printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
+            }
+            cloth.addTexture(tex_2d);
+        }
 
     static void display(void) {
       // calculating positions
@@ -19,28 +34,8 @@ class FallingClothFloor {
 
       Vector3f ball_pos2(3,-5,3); //ball 2
       float ball_radius2 = 2;
-
-      GLuint tex_2d;
-
       timer++;
       //ball_pos[2] = cos(timer/20.0)*5;  //used a cosine function to let the ball move forward and backward
-
-      /*
-      tex_2d = SOIL_load_OGL_texture
-      (
-        "ace.png", 
-        SOIL_LOAD_AUTO,
-        SOIL_CREATE_NEW_ID,
-        SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-      ); 
-
-      if( 0 == tex_2d )
-      {
-        printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
-      }
-      */
-
-      cloth.addTexture(tex_2d);  
 
       cloth.AddForce(Vector3f(0,0,9.8)); // add gravity 
       cloth.AddWind(Vector3f(10,0,10)); // generate wind 
@@ -78,6 +73,6 @@ class FallingClothFloor {
 };
 
 int FallingClothFloor::timer = 0;
-Cloth FallingClothFloor::cloth = Cloth(10,10,20,20); // one Cloth object of the Cloth class
+Cloth FallingClothFloor::cloth = Cloth(10,10,50,50); // one Cloth object of the Cloth class
 
 #endif

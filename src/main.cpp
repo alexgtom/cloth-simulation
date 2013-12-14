@@ -26,6 +26,7 @@
 #include "Scene.h"
 #include "MovingBallScene.h"
 #include "FallingClothScene.h"
+#include "FallingClothFloor.h"
 #include "Parser.h"
 
 using namespace std;
@@ -117,11 +118,17 @@ int main(int argc, char *argv[]) {
 
   init();
   // Display secenes here
-  //MovingBallScene::setup();
-  //glutDisplayFunc(MovingBallScene::display);
-  FallingClothScene::setup();
-  glutDisplayFunc(FallingClothScene::display);
-
+  if(strcmp(argv[2],"-m") == 0) {
+    MovingBallScene::setup(argv[1]);
+    glutDisplayFunc(MovingBallScene::display);
+  } else if(strcmp(argv[2],"-f") == 0){
+    FallingClothScene::setup(argv[1]);
+    glutDisplayFunc(FallingClothScene::display);
+  } else {
+      FallingClothFloor::setup(argv[1]);
+      glutDisplayFunc(FallingClothFloor::display);
+  }
+      
   // Glut stuff
   glutReshapeFunc(myReshape);	
   glutSpecialFunc(scene.keyboard);

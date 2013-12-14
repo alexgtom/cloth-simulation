@@ -2,6 +2,8 @@
 #define _MOVING_BALL_SCENE_H_ 
 
 #include "Scene.h"
+#include <SOIL/SOIL.h>
+#include <string>
 
 #define NUM_TRIANGLES 50
 
@@ -10,7 +12,23 @@ class MovingBallScene {
     static int timer;
     static Cloth cloth; 
 
-    static void setup(void) {
+    static void setup(string s) {
+        
+      GLuint tex_2d = SOIL_load_OGL_texture
+      (
+      s.c_str(),
+      SOIL_LOAD_AUTO,
+      SOIL_CREATE_NEW_ID,
+      SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB |SOIL_FLAG_COMPRESS_TO_DXT
+      );
+            
+      if( 0 == tex_2d )
+      {
+        printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
+      }
+      cloth.addTexture(tex_2d);
+        
+        
 	  // making the upper left most two and upper right most two particles unmovable
       for(int i = 0; i < NUM_TRIANGLES; i++)
         cloth.getParticle(i,0)->makeUnmovable();
@@ -23,10 +41,7 @@ class MovingBallScene {
       GLuint tex_2d;
 
       timer++;
-      ball_pos[2] = cos(timer * 0.2/20.0)*10.0f - 1.0f;  //used a cosine function to let the ball move forward and backward
-
-
-      cloth.addTexture(tex_2d);  
+      ball_pos[2] = cos(timer * 0.1/20.0)*10.0f - 1.0f;  //used a cosine function to let the ball move forward and backward
 
       cloth.AddForce(Vector3f(0,-9.8,0)); // add gravity 
       //cloth.AddWind(Vector3f(1,0,1)); // generate wind 
